@@ -23,12 +23,10 @@ public class ResponseDto {
         this.message = s;
         this.object = allEmp;
     }
-
     public ResponseDto(String s, Optional<User> response) {
         this.message = s;
         this.object = response;
     }
-
     public ResponseDto(String s, User details) {
         this.message = s;
         this.object = details;
