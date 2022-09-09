@@ -15,18 +15,11 @@ public class ResponseDto {
     private String message;
     private Object object;
 
-    public ResponseDto(String string, String response) {
-        this.message = string;
-        this.object = response;
-    }
-    public ResponseDto(String s, List<User> allEmp) {
-        this.message = s;
-        this.object = allEmp;
-    }
-    public ResponseDto(String s, Optional<User> response) {
+    public ResponseDto(String s, String response) {
         this.message = s;
         this.object = response;
     }
+
     public ResponseDto(String s, User details) {
         this.message = s;
         this.object = details;

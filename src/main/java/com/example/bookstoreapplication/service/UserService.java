@@ -1,9 +1,10 @@
 package com.example.bookstoreapplication.service;
 
+import com.example.bookstoreapplication.dto.LoginDto;
 import com.example.bookstoreapplication.dto.UserDto;
 import com.example.bookstoreapplication.exception.UserException;
 import com.example.bookstoreapplication.model.User;
-import com.example.bookstoreapplication.repo.UserRepo;
+import com.example.bookstoreapplication.repository.UserRepo;
 import com.example.bookstoreapplication.util.EmailSenderService;
 import com.example.bookstoreapplication.util.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,56 +21,108 @@ public class UserService implements IUserService {
     TokenUtil tokenUtil;
     @Autowired
     EmailSenderService emailSender;
+
     @Override
     public String insertRecord(UserDto userDto) throws UserException {
-            User user =new User(userDto);
-            userRepo.save(user);
-            String token = tokenUtil.createToken(user.getUser_id());
-            String userData = "Your Details: \n"+user.getFirst_name()+"\n"+user.getLast_name()+"\n"
-                    +user.getAddress()+"\n"+user.getEmail_address()+"\n" +user.getDOB()+"\n"+user.getPassword();
-            emailSender.sendEmail(user.getEmail_address(),"Added Your Details", userData);
-            return token;
+        User user = new User(userDto);
+        userRepo.save(user);
+        String token = tokenUtil.createToken(user.getUserId());
+        emailSender.sendEmail(user.getEmail(), "Added Your Details", "http://localhost:8080/user/retrieve/" + token);
+        return token;
+    }
+
+    @Override
+    public User findAll() {
+        List<User> user = userRepo.findAll();
+        return user.get(0);
+    }
+
+    @Override
+    public User FindById(int id) {
+        Optional<User> user = userRepo.findById(id);
+        return user.get();
+    }
+
+    @Override
+    public User getByEmail(String email) {
+        User user = userRepo.findByEmail(email);
+        return user;
+    }
+
+    @Override
+    public User editByEmail(UserDto userDTO, String email) {
+        User editdata = userRepo.findByEmail(email);
+        if (editdata != null) {
+            editdata.setFirstName(userDTO.getFirstName());
+            editdata.setLastName(userDTO.getLastName());
+            editdata.setEmail(userDTO.getEmail());
+            editdata.setAddress(userDTO.getAddress());
+            editdata.setDOB(userDTO.getDOB());
+            editdata.setPassword(userDTO.getPassword());
+            User user = userRepo.save(editdata);
+            String token = tokenUtil.createToken(editdata.getUserId());
+            emailSender.sendEmail(editdata.getEmail(), "Added Your Details/n", "http://localhost:8080/user/retrieve/" + token);
+            return user;
+        } else {
+            throw new UserException("email:" + email + " is not present ");
         }
 
-    @Override
-    public List<User> findAll() {
-        return userRepo.findAll();
     }
 
     @Override
-    public Optional<User> FindById(Long id) {
-        return userRepo.findById(id);
+    public User getDataByToken(String token) {
+        int Userid = tokenUtil.decodeToken(token);
+        Optional<User> existingData = userRepo.findById(Userid);
+        if (existingData.isPresent()) {
+            return existingData.get();
+        } else
+            throw new UserException("Invalid Token");
     }
 
     @Override
-    public List<User> getAddressBookByemail(String email) {
-        return userRepo.findAddressBookByemail(email);
-    }
-
-    @Override
-    public User editByEmail(UserDto userDTO, String email_address) {
-       List<User> userdata = userRepo.findAddressBookByemail(email_address);
-        Optional<User> editdata = Optional.ofNullable(userdata.get(0));
-        if (editdata.isPresent()) {
-            userdata.get(0).setFirst_name(userDTO.getFirst_name());
-            userdata.get(0).setLast_name(userDTO.getLast_name());
-            userdata.get(0).setAddress(userDTO.getAddress());
-            userdata.get(0).setEmail_address(userDTO.getEmail_address());
-            userdata.get(0).setDOB(userDTO.getDOB());
-            userdata.get(0).setPassword(userDTO.getPassword());
-                //Email Body
-                String updatedData = "Updated Details: \n" + "First Name: " + userdata.get(0).getFirst_name() + "\n" + "Last Name: " + userdata.get(0).getLast_name() + "\n"
-                        + "Address: " + userdata.get(0).getAddress() + "\n" + "Email Address: " + userdata.get(0).getEmail_address() + "\n" + "DOB: " + userdata.get(0).getDOB() +"\n"
-                        + "Password: " + userdata.get(0).getPassword();
-                //sending email
-                emailSender.sendEmail(userdata.get(0).getEmail_address(), "Data Updated!!!", updatedData);
-
-                return userRepo.save(userdata.get(0));
+    public User loginUser(LoginDto loginDto) {
+        Optional<User> userDetails = Optional.ofNullable(userRepo.findByEmail(loginDto.getEmail()));
+        if (userDetails.isPresent()) {
+            //String pass = login.get().getPassword();
+            if (userDetails.get().getPassword().equals(loginDto.getPassword())) {
+                emailSender.sendEmail(userDetails.get().getEmail(), "About Login", "Login Successful!");
+                return userDetails.get();
             } else
-                throw new UserException("Invalid Email Address: " + email_address);
-        }
-
+                emailSender.sendEmail(userDetails.get().getEmail(), "About Login", "Invalid password!");
+            throw new UserException("Wrong Password!");
+        } else
+            throw new UserException("Login Failed, Wrong email or password!!!");
     }
+
+    @Override
+    public String forgotPassword(String email) {
+        User editdata = userRepo.findByEmail(email);
+        if (editdata != null){
+            emailSender.sendEmail(editdata.getEmail(), "About Login", "http://localhost:8080/user/resetPassword");
+            return "Reset link send sucessfully";
+        }else
+            throw new UserException("Login Failed, Wrong email or password!!!");
+    }
+
+    @Override
+    public String resetPassword(LoginDto loginDTO) {
+        Optional<User> userDetails = Optional.ofNullable(userRepo.findByEmail(loginDTO.getEmail()));
+        String password = loginDTO.getPassword();
+        if(userDetails.isPresent()){
+            userDetails.get().setPassword(password);
+            userRepo.save(userDetails.get());
+            return "Password Changed";
+        }else
+            return "Invalid Email Address";
+    }
+    }
+
+
+
+
+
+
+
 
 
 

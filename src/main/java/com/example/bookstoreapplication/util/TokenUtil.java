@@ -14,7 +14,7 @@ public class TokenUtil {
     private static final String TOKEN_SECRET = "BookStore";
 
 
-    public String createToken(Long id)   {
+    public String createToken(int id)   {
 
         try {
             //to set algorithm
@@ -39,9 +39,9 @@ public class TokenUtil {
      * @param token
      * @return
      */
-    public Long decodeToken(String token)
+    public int decodeToken(String token)
     {
-        long id;
+        int id;
         //for verification algorithm
         Verification verification = null;
         try {
@@ -55,7 +55,7 @@ public class TokenUtil {
         DecodedJWT decodedjwt=jwtverifier.verify(token);
 
         Claim claim=decodedjwt.getClaim("user_id");
-        id=claim.asLong();
+        id=claim.asInt();
         return id;
     }
 }
