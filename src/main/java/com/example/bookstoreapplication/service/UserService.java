@@ -3,6 +3,7 @@ package com.example.bookstoreapplication.service;
 import com.example.bookstoreapplication.dto.LoginDto;
 import com.example.bookstoreapplication.dto.UserDto;
 import com.example.bookstoreapplication.exception.UserException;
+import com.example.bookstoreapplication.model.Book;
 import com.example.bookstoreapplication.model.User;
 import com.example.bookstoreapplication.repository.UserRepo;
 import com.example.bookstoreapplication.util.EmailSenderService;
@@ -31,11 +32,7 @@ public class UserService implements IUserService {
         return token;
     }
 
-    @Override
-    public User findAll() {
-        List<User> user = userRepo.findAll();
-        return user.get(0);
-    }
+
 
     @Override
     public User FindById(int id) {
@@ -115,7 +112,14 @@ public class UserService implements IUserService {
         }else
             return "Invalid Email Address";
     }
+
+    @Override
+    public User findAll() {
+        List<User> user = userRepo.findAll();
+        return user.get(0);
+
     }
+}
 
 
 

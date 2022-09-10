@@ -1,5 +1,6 @@
 package com.example.bookstoreapplication.dto;
 
+import com.example.bookstoreapplication.model.Book;
 import com.example.bookstoreapplication.model.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,4 +25,18 @@ public class ResponseDto {
         this.message = s;
         this.object = details;
     }
+
+    public ResponseDto(String s, Book response) {
+        this.message = s;
+        this.object = response;
+
+    }
+
+    public ResponseDto(String s, Object response) {
+        this.message = s;
+        this.object = response;
+    }
+
+
 }
+

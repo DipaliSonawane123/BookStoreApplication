@@ -4,13 +4,10 @@ import com.example.bookstoreapplication.dto.LoginDto;
 import com.example.bookstoreapplication.dto.UserDto;
 import com.example.bookstoreapplication.model.User;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface IUserService {
     String insertRecord(UserDto addressDto);
 
-    User findAll();
+    
 
     User FindById(int id);
 
@@ -25,6 +22,8 @@ public interface IUserService {
    String forgotPassword(String email);
 
     String resetPassword(LoginDto loginDto);
+
+    User findAll();
 }
 
 

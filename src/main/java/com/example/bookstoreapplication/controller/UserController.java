@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 @RestController
@@ -28,7 +29,7 @@ public class UserController {
 
     @GetMapping("/findAll")
     public ResponseEntity<ResponseDto> findAllUser() {
-        User response = service.findAll();
+       User response = service.findAll();
         ResponseDto responseDTO = new ResponseDto("** All User List ** ", response);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 
@@ -70,7 +71,7 @@ public class UserController {
         ResponseDto responseDTO = new ResponseDto("Login Successful!", response);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
-    @PostMapping("/forgotpassword/{email}")
+    @GetMapping("/forgotpassword/{email}")
     public ResponseEntity<ResponseDto> forgotPasswordByemail(@PathVariable String email) {
         String response = service.forgotPassword(email);
         ResponseDto respDTO = new ResponseDto("*** Link send successfully ***", response);
