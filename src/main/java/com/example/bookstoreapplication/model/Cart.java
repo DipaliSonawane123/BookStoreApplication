@@ -1,7 +1,6 @@
 package com.example.bookstoreapplication.model;
 
-import com.example.bookstoreapplication.dto.CartDto;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
