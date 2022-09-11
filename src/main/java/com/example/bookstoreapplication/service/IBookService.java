@@ -25,5 +25,5 @@ public interface IBookService {
     List<Book> sortPriceHighToLow();
 
 
-    Book changeBookQty(int id, int quantity);
+    Book changeBookQty(int cartId, int quantity);
 }

@@ -30,14 +30,14 @@ public class BookStoreExceptionHandler {
         ResponseDto resDTO = new ResponseDto("Exception while processing REST request", exception.getMessage());
         return new ResponseEntity(resDTO, HttpStatus.BAD_REQUEST);
     }
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ResponseDto> handleHttpMessageNotReadableException(
-            HttpMessageNotReadableException exception) {
-        log.error("Invalid DOB Format", exception);
-        ResponseDto resDTO = new ResponseDto("Exception while processing REST Request",
-                "Date Should be in the Format of 'yyyy mm dd'");
-        return new ResponseEntity(resDTO, HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler(HttpMessageNotReadableException.class)
+//    public ResponseEntity<ResponseDto> handleHttpMessageNotReadableException(
+//            HttpMessageNotReadableException exception) {
+//        log.error("Invalid DOB Format", exception);
+//        ResponseDto resDTO = new ResponseDto("Exception while processing REST Request",
+//                "Date Should be in the Format of 'yyyy mm dd'");
+//        return new ResponseEntity(resDTO, HttpStatus.BAD_REQUEST);
+//    }
 
 
 

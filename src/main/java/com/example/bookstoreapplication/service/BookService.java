@@ -35,8 +35,8 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public Book FindById(int id) {
-        Optional<Book> book = bookRepo.findById(id);
+    public Book FindById(int cartId) {
+        Optional<Book> book = bookRepo.findById(cartId);
         return book.get();
     }
 
