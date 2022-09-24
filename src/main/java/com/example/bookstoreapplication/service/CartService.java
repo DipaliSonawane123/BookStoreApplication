@@ -68,9 +68,11 @@ public class CartService implements ICartService {
         @Override
         public Cart editById(int id, CartDto cartDto) {
                 Optional<Book> book =bookRepo.findById(cartDto.getBookId());
+                Optional<User> user =userRepo.findById(cartDto.getUserid());
                 Cart editdata = cartRepo.findById(id).orElse(null);
                 if (editdata != null) {
                         editdata.setBook(book.get());
+                        editdata.setUser(user.get());
                         editdata.setQuantity(cartDto.getQuantity());
                         return cartRepo.save(editdata);
                 } else

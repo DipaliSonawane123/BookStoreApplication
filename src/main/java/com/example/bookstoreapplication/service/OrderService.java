@@ -95,6 +95,4 @@ public class OrderService implements IOrderService
         } else
             throw new OrderException("Id:" + id + " is not present ");
     }
-
-
 }

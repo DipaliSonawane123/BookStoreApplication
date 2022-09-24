@@ -3,7 +3,6 @@ package com.example.bookstoreapplication.service;
 import com.example.bookstoreapplication.dto.LoginDto;
 import com.example.bookstoreapplication.dto.UserDto;
 import com.example.bookstoreapplication.exception.UserException;
-import com.example.bookstoreapplication.model.Book;
 import com.example.bookstoreapplication.model.User;
 import com.example.bookstoreapplication.repository.UserRepo;
 import com.example.bookstoreapplication.util.EmailSenderService;
@@ -31,7 +30,6 @@ public class UserService implements IUserService {
         emailSender.sendEmail(user.getEmail(), "Added Your Details", "http://localhost:8080/user/retrieve/" + token);
         return token;
     }
-
 
 
     @Override
@@ -94,10 +92,10 @@ public class UserService implements IUserService {
     @Override
     public String forgotPassword(String email) {
         User editdata = userRepo.findByEmail(email);
-        if (editdata != null){
-            emailSender.sendEmail(editdata.getEmail(), "About Login", "http://localhost:8080/user/resetPassword");
+        if (editdata != null) {
+            emailSender.sendEmail(editdata.getEmail(), "About Login", "http://localhost:8080/user/resetPassword/"+email);
             return "Reset link send sucessfully";
-        }else
+        } else
             throw new UserException("Login Failed, Wrong email or password!!!");
     }
 
@@ -105,18 +103,32 @@ public class UserService implements IUserService {
     public String resetPassword(LoginDto loginDTO) {
         Optional<User> userDetails = Optional.ofNullable(userRepo.findByEmail(loginDTO.getEmail()));
         String password = loginDTO.getPassword();
-        if(userDetails.isPresent()){
+        if (userDetails.isPresent()) {
             userDetails.get().setPassword(password);
             userRepo.save(userDetails.get());
             return "Password Changed";
-        }else
+        } else
             return "Invalid Email Address";
     }
+
 
     @Override
     public User findAll() {
         List<User> user = userRepo.findAll();
         return user.get(0);
+
+    }
+    @Override
+    public String deleteByid(int id, String token) {
+        Optional<User> user =userRepo.findById(id);
+        int userid = tokenUtil.decodeToken(token);
+        Optional <User> userToken =userRepo.findById(userid);
+        if(user.get().getFirstName().equals(userToken.get().getFirstName())){
+            userRepo.deleteById(id);
+            return user.get()+"User is deleted for this ID";
+        }
+        else
+            throw new UserException("Data is not match");
 
     }
 }

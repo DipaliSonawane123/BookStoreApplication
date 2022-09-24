@@ -24,6 +24,9 @@ public interface IUserService {
     String resetPassword(LoginDto loginDto);
 
     User findAll();
+
+    String deleteByid(int id, String token);
+
 }
 
 
